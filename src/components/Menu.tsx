@@ -30,8 +30,10 @@ const Nav = styled.nav`
   position: relative;
   display: flex;
   font-size: 1.2rem;
+  width: 100%;
+  justify-content: flex-end;
   a {
-    padding: 2rem 4rem;
+    padding: 4rem;
     color: #aaa;
     cursor: pointer;
   }
@@ -39,12 +41,12 @@ const Nav = styled.nav`
 
 const Bar = styled(motion.div)`
   position: absolute;
-  top: -4px;
+  top: 42px;
   border-radius: 5px;
   width: 100px;
-  height: 2rem;
-  background: #444;
-  mix-blend-mode: multiply;
+  height: 0.2rem;
+  background: #646cff99;
+  filter: drop-shadow(0 0 0.5em #646cffaa);
 `;
 
 const MenuItem: React.FC<
@@ -67,7 +69,7 @@ const MenuItem: React.FC<
     <motion.a
       ref={ref}
       animate={
-        isHovered
+        isHovered || (isSelected && !isDark)
           ? { opacity: 1, translateY: -30 }
           : isDark
           ? { opacity: 0.2, translateY: 0 }
@@ -80,6 +82,7 @@ const MenuItem: React.FC<
 };
 
 const Menu = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [currentSelected, setCurrentSelected] = useState(0);
   const [currentHovered, setCurrentHovered] = useState<number | null>(null);
 
@@ -92,12 +95,14 @@ const Menu = () => {
       const rect = selectedEl.getBoundingClientRect();
       const width = rect.width / 2;
       setSelectedWidth(width);
-      setSelectedXDelta(rect.left - width * 2.7);
+      const wholeLeft = containerRef.current?.getBoundingClientRect().left ?? 0;
+      setSelectedXDelta(rect.left - wholeLeft + width / 2);
     }
   }, [selectedEl]);
 
   return (
-    <Nav>
+    <Nav ref={containerRef}>
+      <Bar animate={{ left: selectedXDelta, width: selectedWidth }} />
       {menuItems.map((item, i) => {
         return (
           <div
@@ -116,7 +121,6 @@ const Menu = () => {
           </div>
         );
       })}
-      <Bar animate={{ left: selectedXDelta, width: selectedWidth }} />
     </Nav>
   );
 };
