@@ -34,8 +34,9 @@ const Nav = styled.nav`
   justify-content: flex-end;
   a {
     padding: 4rem;
-    color: #aaa;
+    color: #ccc;
     cursor: pointer;
+    user-select: none;
   }
 `;
 
@@ -93,10 +94,11 @@ const Menu = () => {
   useEffect(() => {
     if (selectedEl) {
       const rect = selectedEl.getBoundingClientRect();
-      const width = rect.width / 2;
+      const width = rect.width - 140;
       setSelectedWidth(width);
-      const wholeLeft = containerRef.current?.getBoundingClientRect().left ?? 0;
-      setSelectedXDelta(rect.left - wholeLeft + width / 2);
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      const wholeLeft = containerRect?.left ?? 0;
+      setSelectedXDelta(rect.left - wholeLeft + 70);
     }
   }, [selectedEl]);
 
